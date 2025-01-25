@@ -34,7 +34,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoutes)
 
 app.get("/health", (req, res) => {
-    res.status(200).res.json({ message: "Server is running" })
+    res.status(200).json({ message: "Server is running" })
 })
 
 server.listen(PORT, () => {
