@@ -13,6 +13,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import ForgotPassword from './pages/ForgotPassword';
 import ChangePassword from './pages/ChangePassword';
 import { useThemeStore } from './store/useTheme';
+import { Analytics } from "@vercel/analytics/react"
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -33,6 +34,7 @@ const App = () => {
 
   return (
     <>
+    <Analytics/>
       <div data-theme={theme} className='min-h-screen'>
         <Navbar />
         <Routes>
