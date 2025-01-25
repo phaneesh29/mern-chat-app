@@ -1,6 +1,7 @@
 import { MessageModel } from "../models/message.model.js";
 import { UserModel } from "../models/user.model.js";
 import cloudinary from "../utils/cloudinary.js";
+import { getReceiverSocketId, io } from "../utils/socket.js";
 
 export const getUsersForSidebarController = async (req, res) => {
     try {
@@ -48,6 +49,10 @@ export const sendMessageController = async (req, res) => {
         })
 
         //chat-realtime
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {
@@ -67,7 +72,13 @@ export const deleteMessageController = async (req, res) => {
         if (!message) {
             return res.status(400).json({ message: "You dont have permission to delete this message" })
         }
+        const receiverId = message.receiverId.toString()
         const deletedMessage = await MessageModel.findOneAndDelete({ _id: messageId, senderId: userId })
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("deletedMessage", deletedMessage);
+        }
 
         res.status(200).json({ message: "message deleted successfully", deletedMessage });
 

@@ -60,5 +60,27 @@ export const useChatStore = create((set, get) => ({
             set({ isMessageDeleting: false })
         }
     },
+    subscribeToMessages: () => {
+        const { selectedUser } = get();
+        if (!selectedUser) return;
+        const socket = useAuthStore.getState().socket;
+        socket.on("newMessage", (newMessage) => {
+            const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+            if (!isMessageSentFromSelectedUser) return;
+            set({
+                messages: [...get().messages, newMessage],
+            });
+        })
+        socket.on("deletedMessage", (deletedMessage) => {
+            const isMessageSentFromSelectedUser = deletedMessage.senderId === selectedUser._id;
+            if (!isMessageSentFromSelectedUser) return;
+            set({ messages: get().messages.filter(message => message._id !== deletedMessage._id) })
+        })
+    },
+    unsubscribeFromMessages: () => {
+        const socket = useAuthStore.getState().socket;
+        socket.off("newMessage");
+        socket.off("deletedMessage");
+    },
     setSelectedUser: (selectedUser) => set({ selectedUser }),
 }))
