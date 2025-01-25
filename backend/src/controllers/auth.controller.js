@@ -66,8 +66,8 @@ export const loginController = async (req, res) => {
         const token = generateToken(user._id)
         res.status(200).cookie("authToken", token, {
             httpOnly: true,
-            secure: false, //change in prod
-            sameSite: 'Strict', // change
+            secure: true,
+            sameSite: 'None',
             maxAge: 24 * 60 * 60 * 1000,
         }).json({
             _id: user._id,

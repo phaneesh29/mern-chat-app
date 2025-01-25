@@ -19,7 +19,7 @@ const userSchema = new Schema({
     },
     profilePic: {
         type: String,
-        default: "http://localhost:8080/public/default.webp",
+        default: "https://mern-chat-app-qveo.onrender.com/public/default.webp",
     },
     isVerified: {
         type: Boolean,
